@@ -4,6 +4,7 @@ import com.bytes_colaborativos.api.commons.dto.LoginRequest;
 import com.bytes_colaborativos.api.commons.dto.TokenResponse;
 import com.bytes_colaborativos.api.commons.dto.UserEntityRequest;
 import com.bytes_colaborativos.api.commons.model.entity.UserEntity;
+import com.bytes_colaborativos.api.commons.model.enums.UserRole;
 import com.bytes_colaborativos.api.repository.UserEntityRepository;
 import com.bytes_colaborativos.api.service.AuthService;
 import com.bytes_colaborativos.api.service.JwtService;
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity userCreated = userEntityRepository.save(userToSave);
         log.info("Usuario creado exitosamente con ID: {}", userCreated.getId());
 
-        return jwtService.generateToken(userCreated.getId(), userCreated.getRole().name());
+        return jwtService.generateToken(userCreated.getEmail(), userCreated.getRole().name());
     }
 
     @Override
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = (UserEntity) authentication.getPrincipal();
 
         log.info("Login exitoso para usuario: {}", user.getEmail());
-        return jwtService.generateToken(user.getId(), user.getRole().name());
+        return jwtService.generateToken(user.getEmail(), user.getRole().name());
     }
 
     private UserEntity mapToEntity(UserEntityRequest userEntityRequest) {
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(userEntityRequest.getPassword()))
                 .firstName(userEntityRequest.getFirstName())
                 .lastName(userEntityRequest.getLastName())
-                .role(userEntityRequest.getRole())
+                .role(UserRole.USER)
                 .build();
     }
 }

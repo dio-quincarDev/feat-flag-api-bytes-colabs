@@ -56,7 +56,6 @@ class AuthServiceImplTest {
                 .password("password123")
                 .firstName("Test")
                 .lastName("User")
-                .role(UserRole.USER)
                 .build();
 
         userEntity = UserEntity.builder()
@@ -73,7 +72,7 @@ class AuthServiceImplTest {
         when(userEntityRepository.findByEmail(userEntityRequest.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(userEntityRequest.getPassword())).thenReturn("encodedPassword");
         when(userEntityRepository.save(any(UserEntity.class))).thenReturn(userEntity);
-        when(jwtService.generateToken(any(UUID.class), anyString())).thenReturn(new TokenResponse("fake-token"));
+        when(jwtService.generateToken(anyString(), anyString())).thenReturn(new TokenResponse("fake-token"));
 
         TokenResponse tokenResponse = authService.createUser(userEntityRequest);
 
@@ -90,7 +89,7 @@ class AuthServiceImplTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(userEntity);
-        when(jwtService.generateToken(userEntity.getId(), userEntity.getRole().name())).thenReturn(new TokenResponse("fake-token"));
+        when(jwtService.generateToken(userEntity.getEmail(), userEntity.getRole().name())).thenReturn(new TokenResponse("fake-token"));
 
         TokenResponse tokenResponse = authService.login(loginRequest);
 

@@ -33,7 +33,4 @@ public class UserEntityRequest {
     private String password;
 
 
-    @NotNull(message = "El rol no puede ser nulo")
-    @Schema(description = "Rol del usuario", example = "USER")
-    private UserRole role;
 }

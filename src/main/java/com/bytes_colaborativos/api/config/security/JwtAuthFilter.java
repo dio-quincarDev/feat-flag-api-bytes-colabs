@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService; // Usado por Spring para la autenticación, no directamente aquí
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -44,18 +43,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        final UUID userId;
+        final String userEmail;
 
         try {
-            userId = jwtService.extractUserEntityId(jwt);
+            userEmail = jwtService.extractEmail(jwt);
         } catch (Exception e) {
             log.warn("Token JWT inválido o expirado: {}", e.getMessage());
             filterChain.doFilter(request, response); // Continuar sin autenticar
             return;
         }
 
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtService.getClaims(jwt).getSubject());
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
             if (!jwtService.isExpired(jwt)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

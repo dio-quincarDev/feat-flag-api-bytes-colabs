@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -30,15 +29,14 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public TokenResponse generateToken(UUID userEntityId, String role) {
+    public TokenResponse generateToken(String email, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         String normalizedRole = role.startsWith("ROLE_") ? role.substring(5) : role;
 
         String token = Jwts.builder()
-                .subject(userEntityId.toString())
-                .claim("userEntityId", userEntityId.toString()) // Guardar como String
+                .subject(email)
                 .claim("role", normalizedRole)
                 .issuedAt(now)
                 .expiration(expirationDate)
@@ -80,19 +78,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public UUID extractUserEntityId(String token) {
-        final Claims claims = getClaims(token);
-        String userIdAsString = claims.get("userEntityId", String.class);
-
-        if (userIdAsString == null) {
-            // Fallback por si el claim personalizado no estuviera, usamos el subject.
-            userIdAsString = claims.getSubject();
-        }
-
-        if (userIdAsString == null) {
-            throw new IllegalArgumentException("El token no contiene el ID de usuario (userEntityId o subject).");
-        }
-
-        return UUID.fromString(userIdAsString);
+    public String extractEmail(String token) {
+        return getClaims(token).getSubject();
     }
 }
