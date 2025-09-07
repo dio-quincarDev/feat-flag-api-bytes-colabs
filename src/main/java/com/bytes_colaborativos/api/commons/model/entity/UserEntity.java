@@ -21,31 +21,29 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class UserEntity implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String password;
-
-    @Column(unique = true, nullable = false)
-    private String firstName;
-
-    @Column(unique = true, nullable = false)
-    private String lastName;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("Role_" + role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -65,13 +63,11 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // Para el MVP, asumimos que las credenciales nunca expiran
         return true;
     }
 
-   // @Override
-    //public boolean isEnabled() {
-      //  return isActive;
-    //}
-
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
