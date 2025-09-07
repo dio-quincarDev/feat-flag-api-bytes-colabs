@@ -21,9 +21,16 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class UserEntity implements UserDetails {
-    @Id
+   
+	@Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+	
+	@Column(unique = true, nullable = false)
+	private String firstName;
+
+    @Column(unique = true, nullable = false)
+	private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -31,11 +38,7 @@ public class UserEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
-    private String firstName;
-
-    @Column(unique = true, nullable = false)
-    private String lastName;
+  
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

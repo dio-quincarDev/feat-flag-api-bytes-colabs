@@ -14,6 +14,14 @@ import lombok.*;
 @NoArgsConstructor
 @Schema(description = "Solicitud para la creación de un usuario")
 public class UserEntityRequest {
+	
+    @NotBlank(message = "El nombre no puede estar vacío")
+    @Schema(description = "Nombre del usuario", example = "Juan")
+    private String firstName;
+
+    @NotBlank(message = "El apellido no puede estar vacío")
+    @Schema(description = "Apellido del usuario", example = "Pérez")
+    private String lastName;
 
     @Email(message = "El formato del email no es válido")
     @NotBlank(message = "El email no puede estar vacío")
@@ -24,13 +32,6 @@ public class UserEntityRequest {
     @Schema(description = "Contraseña del usuario", example = "passwordSegura123")
     private String password;
 
-    @NotBlank(message = "El nombre no puede estar vacío")
-    @Schema(description = "Nombre del usuario", example = "Juan")
-    private String firstName;
-
-    @NotBlank(message = "El apellido no puede estar vacío")
-    @Schema(description = "Apellido del usuario", example = "Pérez")
-    private String lastName;
 
     @NotNull(message = "El rol no puede ser nulo")
     @Schema(description = "Rol del usuario", example = "USER")
