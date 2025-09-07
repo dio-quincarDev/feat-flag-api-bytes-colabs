@@ -22,7 +22,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(unique = true, nullable = false)
@@ -69,9 +69,9 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-   // @Override
-    //public boolean isEnabled() {
-      //  return isActive;
-    //}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
 }
