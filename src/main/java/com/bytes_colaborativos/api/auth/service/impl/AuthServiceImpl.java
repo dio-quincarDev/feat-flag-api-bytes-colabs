@@ -1,8 +1,8 @@
 package com.bytes_colaborativos.api.auth.service.impl;
 
-import com.bytes_colaborativos.api.auth.commons.dto.LoginRequest;
-import com.bytes_colaborativos.api.auth.commons.dto.TokenResponse;
-import com.bytes_colaborativos.api.auth.commons.dto.UserEntityRequest;
+import com.bytes_colaborativos.api.auth.commons.dto.request.LoginRequest;
+import com.bytes_colaborativos.api.auth.commons.dto.response.TokenResponse;
+import com.bytes_colaborativos.api.auth.commons.dto.request.UserEntityRequest;
 import com.bytes_colaborativos.api.auth.commons.model.entity.UserEntity;
 import com.bytes_colaborativos.api.auth.commons.model.enums.UserRole;
 import com.bytes_colaborativos.api.auth.repository.UserEntityRepository;
@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.bytes_colaborativos.api.exceptions.DuplicateEmailException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,12 +35,33 @@ public class AuthServiceImpl implements AuthService {
 
         if (userEntityRepository.findByEmail(userEntityRequest.getEmail()).isPresent()) {
             log.warn("Intento de crear usuario con email existente: {}", userEntityRequest.getEmail());
-            throw new IllegalArgumentException("El email ya está registrado.");
+            throw new DuplicateEmailException("El email ya está registrado.");
         }
 
-        UserEntity userToSave = mapToEntity(userEntityRequest);
+        UserEntity userToSave = mapToEntity(userEntityRequest, UserRole.USER);
         UserEntity userCreated = userEntityRepository.save(userToSave);
         log.info("Usuario creado exitosamente con ID: {}", userCreated.getId());
+
+        return jwtService.generateToken(userCreated.getEmail(), userCreated.getRole().name());
+    }
+
+    @Override
+    public TokenResponse createSuperAdmin(UserEntityRequest userEntityRequest) {
+        log.info("Intentando crear SUPER_ADMIN para email: {}", userEntityRequest.getEmail());
+
+        if (userEntityRepository.existsByRole(UserRole.SUPER_ADMIN)) {
+            log.warn("Intento de crear SUPER_ADMIN cuando ya existe uno.");
+            throw new IllegalStateException("Ya existe un SUPER_ADMIN en el sistema.");
+        }
+
+        if (userEntityRepository.findByEmail(userEntityRequest.getEmail()).isPresent()) {
+            log.warn("Intento de crear SUPER_ADMIN con email existente: {}", userEntityRequest.getEmail());
+            throw new DuplicateEmailException("El email ya está registrado.");
+        }
+
+        UserEntity userToSave = mapToEntity(userEntityRequest, UserRole.SUPER_ADMIN);
+        UserEntity userCreated = userEntityRepository.save(userToSave);
+        log.info("SUPER_ADMIN creado exitosamente con ID: {}", userCreated.getId());
 
         return jwtService.generateToken(userCreated.getEmail(), userCreated.getRole().name());
     }
@@ -61,13 +83,13 @@ public class AuthServiceImpl implements AuthService {
         return jwtService.generateToken(user.getEmail(), user.getRole().name());
     }
 
-    private UserEntity mapToEntity(UserEntityRequest userEntityRequest) {
+    private UserEntity mapToEntity(UserEntityRequest userEntityRequest, UserRole role) {
         return UserEntity.builder()
                 .email(userEntityRequest.getEmail())
                 .password(passwordEncoder.encode(userEntityRequest.getPassword()))
                 .firstName(userEntityRequest.getFirstName())
                 .lastName(userEntityRequest.getLastName())
-                .role(UserRole.USER)
+                .role(role)
                 .build();
     }
 }

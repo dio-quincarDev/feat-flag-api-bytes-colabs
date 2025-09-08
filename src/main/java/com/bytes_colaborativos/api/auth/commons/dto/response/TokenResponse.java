@@ -1,4 +1,4 @@
-package com.bytes_colaborativos.api.auth.commons.dto;
+package com.bytes_colaborativos.api.auth.commons.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
