@@ -1,6 +1,6 @@
 package com.bytes_colaborativos.api.auth.service;
 
-import com.bytes_colaborativos.api.auth.commons.dto.TokenResponse;
+import com.bytes_colaborativos.api.auth.commons.dto.response.TokenResponse;
 import io.jsonwebtoken.Claims;
 
 public interface JwtService {

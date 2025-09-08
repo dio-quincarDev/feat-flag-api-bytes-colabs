@@ -1,6 +1,6 @@
 package com.bytes_colaborativos.api.auth.config.security.handlers;
 
-import com.bytes_colaborativos.api.auth.commons.dto.ErrorResponse;
+import com.bytes_colaborativos.api.auth.commons.dto.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
