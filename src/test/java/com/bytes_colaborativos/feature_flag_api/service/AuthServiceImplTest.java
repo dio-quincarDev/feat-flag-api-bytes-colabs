@@ -1,13 +1,13 @@
 package com.bytes_colaborativos.feature_flag_api.service;
 
-import com.bytes_colaborativos.api.commons.dto.LoginRequest;
-import com.bytes_colaborativos.api.commons.dto.TokenResponse;
-import com.bytes_colaborativos.api.commons.dto.UserEntityRequest;
-import com.bytes_colaborativos.api.commons.model.entity.UserEntity;
-import com.bytes_colaborativos.api.commons.model.enums.UserRole;
-import com.bytes_colaborativos.api.repository.UserEntityRepository;
-import com.bytes_colaborativos.api.service.JwtService;
-import com.bytes_colaborativos.api.service.impl.AuthServiceImpl;
+import com.bytes_colaborativos.api.auth.commons.dto.LoginRequest;
+import com.bytes_colaborativos.api.auth.commons.dto.TokenResponse;
+import com.bytes_colaborativos.api.auth.commons.dto.UserEntityRequest;
+import com.bytes_colaborativos.api.auth.commons.model.entity.UserEntity;
+import com.bytes_colaborativos.api.auth.commons.model.enums.UserRole;
+import com.bytes_colaborativos.api.auth.repository.UserEntityRepository;
+import com.bytes_colaborativos.api.auth.service.JwtService;
+import com.bytes_colaborativos.api.auth.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

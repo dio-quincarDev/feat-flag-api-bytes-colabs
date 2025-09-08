@@ -1,6 +1,6 @@
 package com.bytes_colaborativos.api.exceptions;
 
-import com.bytes_colaborativos.api.commons.dto.ErrorResponse;
+import com.bytes_colaborativos.api.auth.commons.dto.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
