@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table
 @Data
@@ -14,12 +16,12 @@ import lombok.NoArgsConstructor;
 public class FeatureConfig {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private Environment environment;
 
-    private String client;
+    private String clientId;
 
     private boolean enabled;
 
