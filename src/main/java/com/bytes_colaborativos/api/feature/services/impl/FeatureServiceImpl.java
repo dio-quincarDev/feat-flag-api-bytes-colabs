@@ -1,7 +1,10 @@
 package com.bytes_colaborativos.api.feature.services.impl;
 
 import com.bytes_colaborativos.api.feature.dto.FeatureDto;
+import com.bytes_colaborativos.api.feature.dto.FeatureToogleRequest;
 import com.bytes_colaborativos.api.feature.model.Feature;
+import com.bytes_colaborativos.api.feature.model.FeatureConfig;
+import com.bytes_colaborativos.api.feature.repositories.FeatureConfigRepository;
 import com.bytes_colaborativos.api.feature.repositories.FeatureRepository;
 import com.bytes_colaborativos.api.feature.services.FeatureService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +24,7 @@ public class FeatureServiceImpl implements FeatureService {
     private static final Logger log = LoggerFactory.getLogger(FeatureServiceImpl.class);
 
     private final FeatureRepository featureRepository;
+    private final FeatureConfigRepository featureConfigRepository;
 
     @Override
     public Feature createFeature(FeatureDto featureRequest) {
@@ -53,6 +57,48 @@ public class FeatureServiceImpl implements FeatureService {
         return featureRepository.findById(UUID.fromString(id))
                 .map(this::mapToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Feature no encontrada con id: "+id));
+    }
+
+    @Override
+    public void toggleFeature(String featureId, FeatureToogleRequest request, boolean enable) {
+        if (request.environment() == null && (request.clientId() == null || request.clientId().isBlank())) {
+            throw new IllegalArgumentException("Debe proporcionar un 'environment' o un 'clientId'.");
+        }
+        if (request.environment() != null && request.clientId() != null && !request.clientId().isBlank()) {
+            throw new IllegalArgumentException("No puede proporcionar 'environment' y 'clientId' simultáneamente.");
+        }
+
+        UUID featureUUID = UUID.fromString(featureId);
+        Feature feature = featureRepository.findById(featureUUID)
+                .orElseThrow(() -> new EntityNotFoundException("Feature no encontrada con id: " + featureId));
+
+        Optional<FeatureConfig> existingConfig;
+
+        if (request.environment() != null) {
+            existingConfig = feature.getConfigs().stream()
+                    .filter(c -> c.getEnvironment() != null && c.getEnvironment() == request.environment())
+                    .findFirst();
+        } else {
+            existingConfig = feature.getConfigs().stream()
+                    .filter(c -> c.getClientId() != null && c.getClientId().equals(request.clientId()))
+                    .findFirst();
+        }
+
+        if (existingConfig.isPresent()) {
+            existingConfig.get().setEnabled(enable);
+        } else {
+            FeatureConfig newConfig = new FeatureConfig();
+            newConfig.setFeature(feature);
+            newConfig.setEnabled(enable);
+            if (request.environment() != null) {
+                newConfig.setEnvironment(request.environment());
+            } else {
+                newConfig.setClientId(request.clientId());
+            }
+            feature.getConfigs().add(newConfig);
+        }
+
+        featureRepository.save(feature);
     }
 
     private Feature mapToEntity(FeatureDto dto){
