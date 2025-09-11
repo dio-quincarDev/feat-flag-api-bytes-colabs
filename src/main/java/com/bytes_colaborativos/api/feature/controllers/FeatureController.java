@@ -36,14 +36,14 @@ public class FeatureController {
     }
 
     @PostMapping("/{id}/enable")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole(SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> enableFeature(@PathVariable String id, @RequestBody FeatureToogleRequest request) {
         featureService.toggleFeature(id, request, true);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/disable")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> disableFeature(@PathVariable String id, @RequestBody FeatureToogleRequest request) {
         featureService.toggleFeature(id, request, false);
         return ResponseEntity.noContent().build();
