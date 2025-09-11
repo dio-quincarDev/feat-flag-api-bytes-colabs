@@ -2,6 +2,7 @@ package com.bytes_colaborativos.api.exceptions;
 
 import com.bytes_colaborativos.api.auth.commons.dto.response.ErrorResponse;
 import com.bytes_colaborativos.api.exceptions.DuplicateEmailException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -118,5 +119,16 @@ public class GlobalExceptionHandler {
                 (Map<String, String>) null
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                (Map<String, String>) null
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
