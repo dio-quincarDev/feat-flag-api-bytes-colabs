@@ -4,6 +4,7 @@ import com.bytes_colaborativos.api.feature.dto.FeatureDto;
 import com.bytes_colaborativos.api.feature.dto.FeatureToogleRequest;
 import com.bytes_colaborativos.api.feature.model.Feature;
 import com.bytes_colaborativos.api.feature.model.FeatureConfig;
+import com.bytes_colaborativos.api.feature.model.enums.Environment;
 import com.bytes_colaborativos.api.feature.repositories.FeatureConfigRepository;
 import com.bytes_colaborativos.api.feature.repositories.FeatureRepository;
 import com.bytes_colaborativos.api.feature.services.FeatureService;
@@ -99,6 +100,28 @@ public class FeatureServiceImpl implements FeatureService {
         }
 
         featureRepository.save(feature);
+    }
+
+    @Override
+    public boolean isFeatureActive(String featureName, String clientId, Environment environment) {
+        Feature feature = featureRepository.findByName(featureName)
+                .orElseThrow(() -> new EntityNotFoundException("Feature no encontrada con el nombre: " + featureName));
+
+        if (clientId != null && !clientId.isBlank()) {
+            Optional<FeatureConfig> clientConfig = featureConfigRepository.findFirstByFeature_NameAndClientId(featureName, clientId);
+            if (clientConfig.isPresent()) {
+                return clientConfig.get().isEnabled();
+            }
+        }
+
+        if (environment != null) {
+            Optional<FeatureConfig> envConfig = featureConfigRepository.findFirstByFeature_NameAndEnvironment(featureName, environment);
+            if (envConfig.isPresent()) {
+                return envConfig.get().isEnabled();
+            }
+        }
+
+        return feature.isEnabledByDefault();
     }
 
     private Feature mapToEntity(FeatureDto dto){
