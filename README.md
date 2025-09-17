@@ -4,8 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.1-green?logo=springboot)  
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)  
 ![JWT Auth](https://img.shields.io/badge/Auth-JWT-yellow?logo=jsonwebtokens)  
-![License](https://img.shields.io/badge/License-MIT-lightgrey)  
-![Build](https://github.com/dio-quincarDev/feat-flag-api-bytes-colabs/actions/workflows/ci.yml/badge.svg)  
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Tests](https://img.shields.io/badge/Tests-JUnit%20%2B%20Mockito-orange?logo=testing)  
 ![API Docs](https://img.shields.io/badge/Swagger-UI-blue?logo=swagger)
 
