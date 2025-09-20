@@ -197,3 +197,13 @@ Los informes de las pruebas se generan en el directorio `target/surefire-reports
 ## 📄 Licencia
 
 Este proyecto está distribuido bajo la **Licencia Apache 2.0**. Consulta el archivo `LICENSE` para más detalles.
+
+---
+
+## 🤝 Área de Colaboradores
+
+Proyecto de la comunidad **Bytes Colaborativos**, evaluado por la jurado **[devch-tech](https://github.com/devch-tech)**  
+
+Colaboradores:  
+- [@dio-quincarDev](https://github.com/dio-quincarDev)  
+- [@AndreGarT](https://github.com/AndreGarT)
